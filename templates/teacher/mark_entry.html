@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mark Entry</title>
+
+<style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 110px; /* for navbar */
+    color: #333;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 30px 25px; /* reduced height */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: #fff;
+    font-size: 18px; /* Slightly smaller font */
+    font-weight: 700;
+}
+
+
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= CONTAINER ================= */
+.container {
+    max-width: 950px;
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+/* ================= FORM CONTROLS ================= */
+select, input[type="number"], button {
+    width: calc(50% - 12px); /* 2 per row */
+    padding: 10px;
+    margin: 6px;
+    border-radius: 8px;
+    border: 1px solid #cfdceb;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+select:focus, input[type="number"]:focus {
+    border-color: #2b92ff;
+    box-shadow: 0 0 0 2px rgba(43,146,255,0.15);
+}
+
+button {
+    width: auto;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(43,146,255,0.3);
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #e3e9f0;
+    text-align: center;
+    font-size: 14px;
+}
+
+th {
+    background: #2b92ff;
+    color: white;
+}
+
+tr:nth-child(even) td {
+    background: #f9fbfe;
+}
+
+/* ================= STATUS COLORS ================= */
+.uploaded {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.not-uploaded {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* ================= GRADE COLORS ================= */
+.grade-Aplus { color: #28a745; font-weight: bold; }
+.grade-A { color: #218838; font-weight: bold; }
+.grade-Bplus { color: #007bff; font-weight: bold; }
+.grade-B { color: #fd7e14; font-weight: bold; }
+.grade-C { color: #795548; font-weight: bold; }
+.grade-F { color: #dc3545; font-weight: bold; }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    select, input[type="number"], button {
+        width: 100%; /* stack on mobile */
+    }
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    th, td {
+        font-size: 13px;
+        padding: 6px;
+    }
+}
+
+.uploaded {
+    color: green;
+    font-weight: bold;
+}
+.not-uploaded {
+    color: red;
+    font-weight: bold;
+}
+.grade-Aplus { color: green; font-weight: bold; }
+.grade-A { color: darkgreen; font-weight: bold; }
+.grade-Bplus { color: blue; font-weight: bold; }
+.grade-B { color: orange; font-weight: bold; }
+.grade-C { color: brown; font-weight: bold; }
+.grade-F { color: red; font-weight: bold; }
+
+</style>
+</head>
+
+<body>
+    <nav><h2>Mark Entry</h2>
+    <div class="nav-links">
+    <a href="{{url_for('teacher_dashboard')}}">Dashboard</a>
+    <a href="{{url_for('periods')}}">Period</a>
+    <a href="{{url_for('attendance')}}">Attendance</a>
+    <a href="{{ url_for('attendance_details_page')}}">Attendance Details</a>
+    <a href="{{url_for('lecture_notes')}}" >Lecture Notes</a>
+    <a href="{{url_for('academic_task')}}">Academic Tasks</a>
+    <a href="{{url_for('mark_entry')}}">Mark Entry</a>
+    <a href="{{url_for('work_valuate')}}">Work Valuate</a>
+    <a href="{{url_for('teacher_notification')}}">Notification</a>
+    <a href="{{url_for('home_page')}}">Logout</a>
+    </div></nav>
+<div class="container">
+<h2>Mark Entry</h2>
+
+<select id="department">
+      <option value="">--Select Department--</option>
+      <optgroup label="B.SC.">
+        <option value="B.SC - MATHEMATICS">B.SC - MATHEMATICS</option>
+        <option value="B.SC - COMPUTER SCIENCE">B.SC - COMPUTER SCIENCE</option>
+        <option value="B.SC - CHEMISTRY">B.SC - CHEMISTRY</option>
+        <option value="B.SC - MICROBIOLOGY">B.SC - MICROBIOLOGY</option>
+        <option value="B.SC - PSYCHOLOGY">B.SC - PSYCHOLOGY</option>
+      </optgroup>
+      <optgroup label="B.COM">
+        <option value="B.COM - FINANCE">B.COM - FINANCE</option>
+        <option value="B.COM - ACCOUNTANCY">B.COM - ACCOUNTANCY</option>
+        <option value="B.COM - CO-OPERATION">B.COM - CO-OPERATION</option>
+      </optgroup>
+      <optgroup label="B.A.">
+        <option value="B.A - MALAYALAM">B.A - MALAYALAM</option>
+        <option value="B.A - ENGLISH">B.A - ENGLISH</option>
+        <option value="B.A - HISTORY">B.A - HISTORY</option>
+        <option value="B.A - ECONOMICS">B.A - ECONOMICS</option>
+      </optgroup>
+      <optgroup label="BTTM">
+        <option value="BTTM - TOURISM MANAGEMENT">BTTM - TOURISM MANAGEMENT</option>
+      </optgroup>
+    </select>
+
+    <select id="semester">
+      <option value="">Select Semester</option>
+      <option value="Semester 1">Semester 1</option>
+      <option value="Semester 2">Semester 2</option>
+      <option value="Semester 3">Semester 3</option>
+      <option value="Semester 4">Semester 4</option>
+      <option value="Semester 5">Semester 5</option>
+      <option value="Semester 6">Semester 6</option>
+      <option value="Semester 7">Semester 7</option>
+      <option value="Semester 8">Semester 8</option>
+    </select>
+
+    <select id="work_type">
+      <option value="">--Select Work Type--</option>
+      <option value="Workshop">Workshop</option>
+      <option value="Assignment">Assignment</option>
+      <option value="Assessment">Assessment</option>
+      <option value="Research Topic">Research Topic</option>
+      <option value="Project">Project</option>
+      <option value="Lab">Lab</option>
+    </select>
+
+
+
+<div id="result"></div>
+<button onclick="fetchStudents()">Fetch Students</button>
+<button onclick="saveMarks()">Save Marks</button>
+<button onclick="exportPDF()">Export PDF</button>
+
+</div>
+
+<script>
+let studentsData = [];
+
+function fetchStudents() {
+    const dept = department.value;
+    const sem = semester.value;
+    const workType = work_type.value;
+
+    fetch(`/fetch_students?department=${dept}&semester=${sem}&work_type=${workType}`)
+    .then(res => res.json())
+    .then(data => {
+
+        studentsData = data;
+
+        if (data.length === 0) {
+            result.innerHTML = "<p>No students found</p>";
+            return;
+        }
+
+        let html = `
+        <table>
+        <tr>
+            <th>Register No</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Mark (100)</th>
+            <th>Grade</th>
+        </tr>`;
+
+        data.forEach((s, i) => {
+            const uploaded = s.done_status === "Done";
+
+            html += `
+            <tr>
+                <td>${s.register_no}</td>
+                <td>${s.full_name}</td>
+                <td class="${uploaded ? 'uploaded' : 'not-uploaded'}">
+                    ${uploaded ? 'Uploaded' : 'Not Uploaded'}
+                </td>
+                <td>
+                    ${uploaded
+                    ? `<input type="number" min="0" max="100"
+                        value="${s.mark}"
+                        onchange="studentsData[${i}].mark=this.value">`
+                    : '-'}
+                </td>
+                <td>${s.grade || '-'}</td>
+            </tr>`;
+        });
+
+        html += "</table>";
+        result.innerHTML = html;
+    });
+}
+
+function saveMarks() {
+    const payload = studentsData
+        .filter(s => s.done_status === "Done")
+        .map(s => ({
+            student_id: s.student_id,
+            task_id: s.task_id,
+            mark: s.mark || 0
+        }));
+
+    fetch('/save_marks', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(() => {
+        alert("Marks saved successfully");
+        fetchStudents();
+    });
+}
+function exportPDF() {
+
+    const dept = document.getElementById("department").value;
+    const sem = document.getElementById("semester").value;
+    const workType = document.getElementById("work_type").value;
+
+    if (!dept || !sem || !workType) {
+        alert("Please select Department, Semester and Work Type");
+        return;
+    }
+
+    const url = `/export_marks_pdf?department=${encodeURIComponent(dept)}&semester=${encodeURIComponent(sem)}&work_type=${encodeURIComponent(workType)}`;
+    window.open(url, "_blank");
+}
+function gradeClass(grade) {
+    switch (grade) {
+        case "A+": return "grade-Aplus";
+        case "A": return "grade-A";
+        case "B+": return "grade-Bplus";
+        case "B": return "grade-B";
+        case "C": return "grade-C";
+        case "F": return "grade-F";
+        default: return "";
+    }
+}
+
+</script>
+
+</body>
+</html>

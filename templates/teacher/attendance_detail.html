@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance Details</title>
+  <style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 100px;
+    color: #333;
+}
+
+/* ================= NAVBAR ================= */
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 14px 20px; /* Reduced padding to decrease height */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: #fff;
+    font-size: 18px; /* Slightly smaller font */
+    font-weight: 700;
+}
+
+
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= PAGE TITLE ================= */
+h2 {
+    text-align: center;
+    margin: 20px 0;
+    color: #2b92ff;
+}
+
+/* ================= FILTER FORM ================= */
+.form-box {
+    max-width: 1100px;
+    margin: auto;
+    background: #ffffff;
+    padding: 22px 26px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    align-items: end;
+}
+
+.form-box label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.form-box select,
+.form-box input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #cfdceb;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+.form-box select:focus,
+.form-box input:focus {
+    border-color: #2b92ff;
+    box-shadow: 0 0 0 2px rgba(43,146,255,0.15);
+}
+
+/* ================= BUTTONS ================= */
+button {
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(43,146,255,0.3);
+}
+
+/* ================= TABLE BOX ================= */
+.table-box {
+    max-width: 1100px;
+    margin: 30px auto;
+    background: #ffffff;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.table-box h3 {
+    color: #2b92ff;
+    margin-bottom: 12px;
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+th, td {
+    padding: 12px 10px;
+    border: 1px solid #e3e9f0;
+    font-size: 14px;
+}
+
+th {
+    background: #2b92ff;
+    color: #fff;
+    text-align: center;
+}
+
+td {
+    text-align: center;
+}
+
+tr:nth-child(even) td {
+    background: #f9fbfe;
+}
+
+/* ================= STATUS COLORS ================= */
+.status-present {
+    color: #28a745;
+    font-weight: 700;
+}
+
+.status-late {
+    color: #f39c12;
+    font-weight: 700;
+}
+
+.status-absent {
+    color: #dc3545;
+    font-weight: 700;
+}
+
+/* ================= PDF BUTTON ================= */
+#exportPDFBtn {
+    background: #28a745;
+    margin-bottom: 12px;
+    float: right;
+}
+
+#exportPDFBtn:hover {
+    box-shadow: 0 6px 15px rgba(40,167,69,0.35);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    th, td {
+        font-size: 13px;
+        padding: 8px;
+    }
+}
+
+    .status-present { color: green; font-weight: bold; }
+    .status-late { color: orange; font-weight: bold; }
+    .status-absent { color: red; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <nav><h2>Attendance Details</h2>
+    <div class="nav-links">
+    <a href="{{url_for('teacher_dashboard')}}">Dashboard</a>
+    <a href="{{url_for('periods')}}">Period</a>
+    <a href="{{url_for('attendance')}}">Attendance</a>
+    <a href="{{ url_for('attendance_details_page')}}">Attendance Details</a>
+    <a href="{{url_for('lecture_notes')}}" >Lecture Notes</a>
+    <a href="{{url_for('academic_task')}}">Academic Tasks</a>
+    <a href="{{url_for('mark_entry')}}">Mark Entry</a>
+    <a href="{{url_for('work_valuate')}}">Work Valuate</a>
+    <a href="{{url_for('teacher_notification')}}">Notification</a>
+    <a href="{{url_for('home_page')}}">Logout</a>
+    </div></nav>
+<h2>Attendance Details</h2>
+
+<div class="form-box">
+  <label for="department">Department:</label>
+  <select id="department">
+    <option value="">--Select Department--</option>
+    <optgroup label="B.SC.">
+      <option value="B.SC - MATHEMATICS">MATHEMATICS</option>
+      <option value="B.SC - COMPUTER SCIENCE">COMPUTER SCIENCE</option>
+      <option value="B.SC - CHEMISTRY">CHEMISTRY</option>
+      <option value="B.SC - MICROBIOLOGY">MICROBIOLOGY</option>
+      <option value="B.SC - PSYCHOLOGY">PSYCHOLOGY</option>
+    </optgroup>
+
+    <optgroup label="B.COM">
+      <option value="B.COM - FINANCE">FINANCE</option>
+      <option value="B.COM - ACCOUNTANCY">ACCOUNTANCY</option>
+      <option value="B.COM - CO-OPERATION">CO-OPERATION</option>
+    </optgroup>
+
+    <optgroup label="B.A.">
+      <option value="B.A - MALAYALAM">MALAYALAM</option>
+      <option value="B.A - ENGLISH">ENGLISH</option>
+      <option value="B.A - HISTORY">HISTORY</option>
+      <option value="B.A - ECONOMICS">ECONOMICS</option>
+    </optgroup>
+
+    <optgroup label="BTTM">
+      <option value="BTTM - TOURISM MANAGEMENT">TOURISM MANAGEMENT</option>
+    </optgroup>
+  </select>
+
+  <label for="period">Period:</label>
+  <select id="period">
+    <option value="">-- Select Period --</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+
+  <label for="registerNo">Register No (optional):</label>
+  <input type="text" id="registerNo" placeholder="Enter Register No" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()"/>
+
+  <label for="fromDate">From Date:</label>
+  <input type="date" id="fromDate" />
+
+  <label for="toDate">To Date:</label>
+  <input type="date" id="toDate" />
+  
+  <br/>
+  <button id="loadAttendanceBtn">Load Attendance</button>
+</div>
+
+<div class="table-box" id="attendanceBox" style="display:none;">
+  <h3>Attendance Records</h3>
+  <!-- ✅ New PDF download button -->
+  <button id="exportPDFBtn" style="float:right; margin-bottom:10px; background-color:#28a745;">Download PDF</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Register No</th>
+        <th>Full Name</th>
+        <th>Department</th>
+        <th>Batch</th>
+        <th>Period</th>
+        <th>Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="attendanceTableBody"></tbody>
+  </table>
+</div>
+
+<script>
+  let currentAttendance = [];
+
+  async function loadAttendance() {
+    const department = document.getElementById("department").value;
+    const period = document.getElementById("period").value;
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+    const registerNo = document.getElementById("registerNo").value.trim();
+
+    if (!fromDate || !toDate) {
+      return alert("Please select From and To Dates!");
+    }
+
+    let url = "";
+    if (registerNo) {
+      url = `/get_attendance?register_no=${registerNo}&from_date=${fromDate}&to_date=${toDate}`;
+      document.getElementById("department").value = "";
+      document.getElementById("period").value = "";
+    } else {
+      if (!department || !period) {
+        return alert("Please select Department and Period!");
+      }
+      url = `/get_attendance?department=${department}&period=${period}&from_date=${fromDate}&to_date=${toDate}`;
+    }
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      currentAttendance = data;
+
+      const tbody = document.getElementById("attendanceTableBody");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No records found</td></tr>`;
+      } else {
+        data.forEach(stu => {
+          const tr = document.createElement("tr");
+          const statusClass = stu.attendance_status === "Present" ? "status-present"
+                              : stu.attendance_status === "Late" ? "status-late"
+                              : "status-absent";
+          tr.innerHTML = `
+            <td>${stu.register_no}</td>
+            <td>${stu.full_name}</td>
+            <td>${stu.department}</td>
+            <td>${stu.batch_year}</td>
+            <td>${stu.period_number}</td>
+            <td>${stu.date}</td>
+            <td class="${statusClass}">${stu.attendance_status}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      document.getElementById("attendanceBox").style.display = "block";
+    } catch (err) {
+      console.error("Error loading attendance:", err);
+      alert("Error fetching attendance data.");
+    }
+  }
+
+  // ✅ Export PDF function
+  async function exportPDF() {
+    if (currentAttendance.length === 0) {
+      return alert("No attendance data to export!");
+    }
+
+    try {
+      const response = await fetch("/export_attendance_pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ attendance: currentAttendance })
+      });
+
+      if (!response.ok) throw new Error("PDF generation failed");
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "attendance_report.pdf";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error exporting PDF:", err);
+      alert("Failed to export PDF");
+    }
+  }
+
+  document.getElementById("loadAttendanceBtn").addEventListener("click", loadAttendance);
+  document.getElementById("exportPDFBtn").addEventListener("click", exportPDF);
+</script>
+</body>
+</html>

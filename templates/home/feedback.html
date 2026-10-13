@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback</title>
+    <style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    display: flex;
+    gap: 30px;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    padding: 40px;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+}
+
+/* ================= BACK LINK ================= */
+a {
+    position: absolute;
+    top: 17px;
+    left: 45px;
+    text-decoration: none;
+    color: #2b92ff;
+    font-weight: bold;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #09f0f4;
+}
+
+/* ================= CARDS ================= */
+.feedback-form,
+.feedback-list {
+    width: 50%;
+    background: #ffffff;
+    padding: 26px;
+    border-radius: 14px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
+}
+
+/* ================= HEADINGS ================= */
+.feedback-form h2,
+.feedback-list h2 {
+    margin-bottom: 18px;
+    color: #1f3c88;
+    font-size: 20px;
+}
+
+/* ================= TEXTAREA ================= */
+textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    resize: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #2b92ff;
+    box-shadow: 0 0 0 2px rgba(43,146,255,0.15);
+}
+
+/* ================= STAR RATING ================= */
+.stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.stars input {
+    display: none;
+}
+
+.stars label {
+    font-size: 34px;
+    color: #d0d0d0;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Selected stars */
+.stars input:checked ~ label {
+    color: #ffc107;
+}
+
+/* Hover effect */
+.stars label:hover,
+.stars label:hover ~ label {
+    color: #ffca28;
+    transform: scale(1.15);
+}
+
+/* ================= BUTTON ================= */
+button {
+    margin-top: 14px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(43, 146, 255, 0.35);
+}
+
+/* ================= FEEDBACK ENTRIES ================= */
+.feedback-entry {
+    background: #f8fbff;
+    margin-bottom: 14px;
+    padding: 14px;
+    border-radius: 8px;
+    border-left: 5px solid #ffc107;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.feedback-entry strong {
+    color: #1f3c88;
+}
+
+/* ================= EMPTY STATE ================= */
+.feedback-list p {
+    color: #777;
+    font-weight: bold;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    body {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .feedback-form,
+    .feedback-list {
+        width: 100%;
+    }
+
+    a {
+        position: static;
+        margin-bottom: 10px;
+    }
+}
+
+    </style>
+</head>
+<body>
+   
+    <div class="feedback-form">
+        <h2>Submit Your Feedback</h2>
+        <form method="POST" action="/feedback">
+            <textarea name="message" rows="4" placeholder="Your feedback..." required></textarea><br><br>
+            <div class="stars">
+                <input type="radio" name="rating" id="star5" value="5"><label for="star5">&#9733;</label>
+                <input type="radio" name="rating" id="star4" value="4"><label for="star4">&#9733;</label>
+                <input type="radio" name="rating" id="star3" value="3"><label for="star3">&#9733;</label>
+                <input type="radio" name="rating" id="star2" value="2"><label for="star2">&#9733;</label>
+                <input type="radio" name="rating" id="star1" value="1"><label for="star1">&#9733;</label>
+            </div><br>
+            <button type="submit">Submit Feedback</button>
+             <a href="{{url_for('index_page')}}">Back</a>
+        </form>
+    </div>
+
+    <div class="feedback-list">
+        <h2>Feedback Received</h2>
+        {% for feedback in feedbacks %}
+        <div class="feedback-entry">
+            <strong>Rating: {{ feedback.rating }} ★</strong><br>
+            {{ feedback.message }}
+        </div>
+        {% else %}
+        <p>No feedback yet.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Lecture Notes</title>
+
+<style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 120px; /* reduced for smaller navbar */
+    color: #222;
+    
+}
+
+/* ================= NAVBAR ================= */
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 30px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 18px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= CONTAINER ================= */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+/* ================= STUDENT INFO ================= */
+.container h2 {
+    margin-bottom: 10px;
+}
+
+.container p {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #444;
+    margin-top: 10px;
+}
+
+/* ================= CARD GRID ================= */
+.card-grid {
+    margin-top: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+/* ================= NOTE CARD ================= */
+.note-card {
+    background: #ffffff;
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.note-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+}
+
+.note-card h3 {
+    font-size: 16px;
+    color: #0b63ff;
+    margin-bottom: 6px;
+}
+
+.note-card p {
+    font-size: 13px;
+    color: #666;
+}
+
+/* ================= BUTTONS ================= */
+.btn {
+    display: inline-block;
+    margin-top: 12px;
+    margin-right: 6px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    transition: opacity 0.25s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn.view {
+    background: #007bff;
+}
+
+.btn.download {
+    background: #28a745;
+}
+
+/* ================= EMPTY MESSAGE ================= */
+.empty {
+    margin-top: 20px;
+    color: #777;
+    font-size: 15px;
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+    <nav><h2>Lecture Notes</h2>
+    <div class="nav-links">
+    <a href="{{url_for('student_dashboard')}}">Dashboard</a>
+    <a href="{{ url_for('student_attendance_graph') }}">Attendance Graph</a>
+    <a href="{{ url_for('student_attendance') }}">Attendance Details</a>
+    <a href="{{url_for('academic_work')}}">Academic Work</a>
+    <a href="{{url_for('student_lecture_notes')}}">Lecture Notes</a>
+    <a href="{{url_for('student_notification')}}">Notification</a>
+    <a href="{{ url_for('home_page') }}">Logout</a>
+    </div></nav>
+<div class="container">
+    <h2>📘 Lecture Notes</h2>
+
+    <p>
+        <h2>👩‍🎓 {{ student.full_name }}</h2>
+    <p><strong>Department:</strong> {{ student.department }}</p>
+    <p><strong>Semester:</strong> {{ student.semester }}</p>
+  </div>
+
+    <div class="card-grid">
+    {% for note in notes %}
+        <div class="note-card">
+            <h3>{{ note["filename"] }}</h3>
+            <p>Uploaded on: {{ note["upload_time"] }}</p>
+
+            <a href="/view_lecture_note/{{ note.id }}" target="_blank" class="btn view">
+                👁 View
+            </a>
+
+            <a href="/download_lecture_note/{{ note.id }}" download class="btn download">
+                ⬇ Download
+            </a>
+        </div>
+    {% else %}
+        <p class="empty">No lecture notes available for your semester.</p>
+    {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Details</title>
+
+    <style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 120px; /* space for fixed navbar */
+    color: #222;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 10px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 18px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.25s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= PAGE TITLE ================= */
+h2 {
+    text-align: center;
+    margin: 20px 0 25px;
+    color: #1e293b;
+}
+
+/* ================= FILTER CARD ================= */
+.filter-card {
+    max-width: 1200px;
+    margin: 0 auto 25px;
+    background: white;
+    padding: 22px 26px;
+    border-radius: 14px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+/* ================= FILTER ROWS ================= */
+.filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.filter-row label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.filter-row input,
+.filter-row select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.filter-row input:focus,
+.filter-row select:focus {
+    border-color: #2b92ff;
+    box-shadow: 0 0 0 2px rgba(43,146,255,0.15);
+}
+
+/* ================= BUTTONS ================= */
+.btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(43,146,255,0.35);
+}
+
+/* ================= TABLE ================= */
+#attendanceTable {
+    width: 95%;
+    margin: 0 auto 40px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+#attendanceTable thead {
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+}
+
+#attendanceTable th,
+#attendanceTable td {
+    padding: 12px 10px;
+    text-align: center;
+    font-size: 14px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+#attendanceTable tbody tr:hover {
+    background: #f1f5f9;
+}
+
+/* ================= STATUS COLORS ================= */
+.present {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.late {
+    color: #ea580c;
+    font-weight: bold;
+}
+
+.absent {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    #attendanceTable {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .btn {
+        margin-top: 8px;
+        width: 100%;
+    }
+}
+       
+    </style>
+</head>
+<body>
+    <nav><h2>Attendance Details</h2>
+    <div class="nav-links">
+    <a href="{{url_for('admin_dashboard')}}">Dashboard</a>
+      <a href="{{url_for('teacher_handle')}}">Teacher Handle</a>
+      <a href="{{url_for('students')}}">Student Handle</a>
+      <a href="{{url_for('student_attendance_details')}}">Attendance Details</a>
+      <a href="{{url_for('student_mark_details')}}">Mark Details</a>
+      <a href="{{url_for('notification_update')}}">Notification</a>
+      <a href="{{url_for('feedback_handle')}}">Feedback</a>
+      <a href="{{url_for('home_page')}}">Logout</a>
+      </div></nav>
+<h2>Attendance Details</h2>
+
+<div class="filter-card">
+
+    <div class="filter-row">
+
+        <div>
+            <label>Department</label>
+            <select id="department">
+                <option value="">-- Select Department --</option>
+                <optgroup label="B.SC.">
+                    <option value="B.SC - MATHEMATICS">MATHEMATICS</option>
+                    <option value="B.SC - COMPUTER SCIENCE">COMPUTER SCIENCE</option>
+                    <option value="B.SC - CHEMISTRY">CHEMISTRY</option>
+                    <option value="B.SC - MICROBIOLOGY">MICROBIOLOGY</option>
+                    <option value="B.SC - PSYCHOLOGY">PSYCHOLOGY</option>
+                </optgroup>
+                <optgroup label="B.COM">
+                    <option value="B.COM - FINANCE">FINANCE</option>
+                    <option value="B.COM - ACCOUNTANCY">ACCOUNTANCY</option>
+                    <option value="B.COM - CO-OPERATION">CO-OPERATION</option>
+                </optgroup>
+                <optgroup label="B.A.">
+                    <option value="B.A - MALAYALAM">MALAYALAM</option>
+                    <option value="B.A - ENGLISH">ENGLISH</option>
+                    <option value="B.A - HISTORY">HISTORY</option>
+                    <option value="B.A - ECONOMICS">ECONOMICS</option>
+                </optgroup>
+                <optgroup label="BTTM">
+                    <option value="BTTM - TOURISM MANAGEMENT">TOURISM MANAGEMENT</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <div>
+            <label>Study Year</label>
+            <select id="batch_year">
+                <option value="">-- Select Year --</option>
+                <option value="1">First Year</option>
+                <option value="2">Second Year</option>
+                <option value="3">Third Year</option>
+                <option value="4">Fourth Year</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Period</label>
+            <select id="period">
+                <option value="">-- Select Period --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="filter-row">
+
+        <div>
+            <label>Register No (Optional)</label>
+            <input type="text" id="register_no" placeholder="Enter Register No">
+        </div>
+
+        <div>
+            <label>From Date</label>
+            <input type="date" id="from_date">
+        </div>
+
+        <div>
+            <label>To Date</label>
+            <input type="date" id="to_date">
+        </div>
+
+    </div>
+
+    <button class="btn" onclick="loadAttendance()">Load Attendance</button>
+   <button class="btn" style="background:#6c757d" onclick="resetFilters()">
+    Reset
+</button>
+
+    <button class="btn" style="margin-left:10px;background:#198754"
+        onclick="exportAttendancePDF()">
+    Export to PDF
+</button>
+
+</div>
+
+<table id="attendanceTable">
+    <thead>
+        <tr>
+            <th>Register No</th>
+            <th>Student Name</th>
+            <th>Department</th>
+            <th>Year</th>
+            <th>Period</th>
+            <th>Subject</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+function loadAttendance() {
+
+    const params = new URLSearchParams({
+        department: document.getElementById("department").value,
+        batch_year: document.getElementById("batch_year").value,
+        period: document.getElementById("period").value,
+        register_no: document.getElementById("register_no").value,
+        from_date: document.getElementById("from_date").value,
+        to_date: document.getElementById("to_date").value
+    });
+
+    fetch(`/get_attendance_admin?${params.toString()}`)
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.querySelector("#attendanceTable tbody");
+            tbody.innerHTML = "";
+
+            if (!data.length) {
+                tbody.innerHTML = "<tr><td colspan='9'>No Records Found</td></tr>";
+                return;
+            }
+
+            data.forEach(row => {
+                let statusClass = "absent";
+                if (row.status === "Present") statusClass = "present";
+                else if (row.status === "Late") statusClass = "late";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${row.register_no}</td>
+                        <td>${row.full_name}</td>
+                        <td>${row.department}</td>
+                        <td>${row.batch_year}</td>
+                        <td>${row.period}</td>
+                        <td>${row.subject}</td>
+                        <td class="${statusClass}">${row.status}</td>
+                        <td>${row.date}</td>
+                        <td>${row.time}</td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(() => alert("Failed to load attendance data"));
+}
+
+
+function exportAttendancePDF() {
+
+    const params = new URLSearchParams({
+        department: document.getElementById("department").value,
+        batch_year: document.getElementById("batch_year").value,
+        period: document.getElementById("period").value,
+        register_no: document.getElementById("register_no").value,
+        from_date: document.getElementById("from_date").value,
+        to_date: document.getElementById("to_date").value
+    });
+
+    // Open PDF in new tab
+    window.open(`/attendance_pdf?${params.toString()}`, "_blank");
+}
+
+
+function resetFilters() {
+
+    document.getElementById("department").value = "";
+    document.getElementById("batch_year").value = "";
+    document.getElementById("period").value = "";
+    document.getElementById("register_no").value = "";
+    document.getElementById("from_date").value = "";
+    document.getElementById("to_date").value = "";
+
+    // Clear table
+    document.querySelector("#attendanceTable tbody").innerHTML = "";
+}
+
+</script>
+
+</body>
+</html>

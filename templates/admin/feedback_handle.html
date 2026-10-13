@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Handle Feedback</title>
+    <style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 90px;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 16px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 18px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+
+/* ================= HEADINGS ================= */
+h2 {
+    margin: 20px 30px;
+    color: #1f3c88;
+}
+
+/* ================= FEEDBACK CARD ================= */
+.feedback-entry {
+    margin: 15px 30px;
+    background: #ffffff;
+    padding: 18px 22px;
+    border-radius: 12px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feedback-entry:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+.feedback-entry p {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+.feedback-entry strong {
+    color: #1f3c88;
+}
+
+/* ================= ACTIONS ================= */
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+/* Buttons */
+.actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+}
+
+/* Examine */
+.examine-btn {
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+}
+
+/* Remove */
+.remove-btn {
+    background: linear-gradient(135deg, #e53935, #ff7043);
+    color: white;
+}
+
+/* ================= EMPTY STATE ================= */
+p:only-child {
+    margin: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #777;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .actions {
+        flex-direction: column;
+    }
+} 
+
+</style>
+</head>
+<body>
+    <nav><h2>Feedback Handle</h2>
+    <div class="nav-links">
+    <a href="{{url_for('admin_dashboard')}}">Dashboard</a>
+      <a href="{{url_for('teacher_handle')}}">Teacher Handle</a>
+      <a href="{{url_for('students')}}">Student Handle</a>
+      <a href="{{url_for('student_attendance_details')}}">Attendance Details</a>
+      <a href="{{url_for('student_mark_details')}}">Mark Details</a>
+      <a href="{{url_for('notification_update')}}">Notification</a>
+      <a href="{{url_for('feedback_handle')}}">Feedback</a>
+      <a href="{{url_for('home_page')}}">Logout</a>
+      </div></nav>
+    <h2>Received Feedback</h2>
+
+    {% for feedback in feedbacks %}
+    <div class="feedback-entry">
+        <p><strong>ID:</strong> {{ feedback.id }}</p>
+        <p><strong>Rating:</strong> {{ feedback.rating }} ★</p>
+        <p><strong>Message:</strong> {{ feedback.message }}</p>
+        <div class="actions">
+            <form action="{{ url_for('examine_feedback', id=feedback.id) }}" method="get">
+                <button class="examine-btn">Examine</button>
+            </form>
+            <form action="{{ url_for('delete_feedback', id=feedback.id) }}" method="post">
+                <button class="remove-btn" onclick="return confirm('Are you sure you want to delete this feedback?')">Remove</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <p>No feedback received yet.</p>
+    {% endfor %}
+</body>
+</html>

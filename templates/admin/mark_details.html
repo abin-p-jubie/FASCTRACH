@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mark Details</title>
+
+<style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 120px; /* space for fixed navbar */
+    color: #333;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* ================= PAGE TITLE ================= */
+h2 {
+    text-align: center;
+    margin: 20px 0 15px;
+    font-size: 26px;
+    color: #1a1a1a;
+}
+
+/* ================= FILTER CARD ================= */
+.filter-card {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 25px 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+/* Filter Rows */
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.filter-row div {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-row label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #555;
+}
+
+.filter-row select,
+.filter-row input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-row select:focus,
+.filter-row input:focus {
+    border-color: #2b92ff;
+    box-shadow: 0 0 5px rgba(43, 146, 255, 0.4);
+    outline: none;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 22px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #09f0f4, #2b92ff);
+    transform: translateY(-2px);
+}
+
+/* ================= TABLE CONTAINER ================= */
+.marktable {
+    max-width: 1200px;
+    margin: 20px auto 40px;
+    padding: 20px 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+/* Table Styling */
+.marktable table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 800px;
+}
+
+.marktable thead {
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.marktable th,
+.marktable td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.marktable tbody tr:nth-child(even) {
+    background: #f5faff;
+}
+
+.marktable tbody tr:hover {
+    background: #e6f2ff;
+}
+
+/* ================= GRADES ================= */
+.grade-A { color: green; font-weight: 600; }
+.grade-B { color: #1e90ff; font-weight: 600; }
+.grade-C { color: orange; font-weight: 600; }
+.grade-D { color: red; font-weight: 600; }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .filter-row {
+        flex-direction: column;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .marktable table {
+        font-size: 12px;
+        min-width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+    <nav><h2>Mark Details</h2>
+    <div class="nav-links">
+    <a href="{{url_for('admin_dashboard')}}">Dashboard</a>
+      <a href="{{url_for('teacher_handle')}}">Teacher Handle</a>
+      <a href="{{url_for('students')}}">Student Handle</a>
+      <a href="{{url_for('student_attendance_details')}}">Attendance Details</a>
+      <a href="{{url_for('student_mark_details')}}">Mark Details</a>
+      <a href="{{url_for('notification_update')}}">Notification</a>
+      <a href="{{url_for('feedback_handle')}}">Feedback</a>
+      <a href="{{url_for('home_page')}}">Logout</a>
+      </div></nav>
+<h2>Student Mark Details</h2>
+
+<div class="filter-card">
+
+<div class="filter-row">
+
+<div>
+<label>Department</label>
+<select id="department">
+    <option value="">-- Select Department --</option>
+    <optgroup label="B.SC.">
+        <option value="B.SC - MATHEMATICS">MATHEMATICS</option>
+        <option value="B.SC - COMPUTER SCIENCE">COMPUTER SCIENCE</option>
+        <option value="B.SC - CHEMISTRY">CHEMISTRY</option>
+        <option value="B.SC - MICROBIOLOGY">MICROBIOLOGY</option>
+        <option value="B.SC - PSYCHOLOGY">PSYCHOLOGY</option>
+    </optgroup>
+    <optgroup label="B.COM">
+        <option value="B.COM - FINANCE">FINANCE</option>
+        <option value="B.COM - ACCOUNTANCY">ACCOUNTANCY</option>
+        <option value="B.COM - CO-OPERATION">CO-OPERATION</option>
+    </optgroup>
+    <optgroup label="B.A.">
+        <option value="B.A - MALAYALAM">MALAYALAM</option>
+        <option value="B.A - ENGLISH">ENGLISH</option>
+        <option value="B.A - HISTORY">HISTORY</option>
+        <option value="B.A - ECONOMICS">ECONOMICS</option>
+    </optgroup>
+    <optgroup label="BTTM">
+        <option value="BTTM - TOURISM MANAGEMENT">TOURISM MANAGEMENT</option>
+    </optgroup>
+</select>
+</div>
+
+<div>
+<label>Study Year</label>
+<select id="batch_year">
+    <option value="">-- Select Year --</option>
+    <option value="1">First Year</option>
+    <option value="2">Second Year</option>
+    <option value="3">Third Year</option>
+    <option value="4">Fourth Year</option>
+</select>
+</div>
+
+<div>
+<label>Register No (Optional)</label>
+<input type="text" id="register_no" placeholder="Enter Register No">
+</div>
+
+</div>
+
+<button class="btn" onclick="loadMarks()">Load Marks</button>
+
+<button class="btn" type="reset"
+        onclick="document.getElementById('markBody').innerHTML=''">
+    Reset
+</button>
+
+
+</div>
+
+<div class="marktable">
+<table>
+<thead>
+<tr>
+<th>Register No</th>
+<th>Student Name</th>
+<th>Department</th>
+<th>Year</th>
+<th>Task</th>
+<th>Mark</th>
+<th>Grade</th>
+<th>Entered On</th>
+</tr>
+</thead>
+<tbody id="markBody"></tbody>
+</table>
+</div>
+<script>
+function validateFilters() {
+    const dept = department.value;
+    const year = batch_year.value;
+    const reg = register_no.value.trim();
+
+    if ((!dept || !year) && !reg) {
+        alert("Select Department & Study Year OR enter Register Number");
+        return false;
+    }
+    return true;
+}
+
+function loadMarks() {
+    if (!validateFilters()) return;
+
+    const params = new URLSearchParams({
+        department: department.value,
+        batch_year: batch_year.value,
+        register_no: register_no.value
+    });
+
+    fetch(`/get_marks_admin?${params.toString()}`)
+    .then(res => res.json())
+    .then(data => {
+        const body = document.getElementById("markBody");
+        body.innerHTML = "";
+
+        if (!data.length) {
+            body.innerHTML = "<tr><td colspan='8'>No Records Found</td></tr>";
+            return;
+        }
+
+        data.forEach(row => {
+            body.innerHTML += `
+            <tr>
+                <td>${row.register_no}</td>
+                <td>${row.full_name}</td>
+                <td>${row.department}</td>
+                <td>${row.year}</td>
+                <td>${row.category}</td>
+                <td>${row.mark}</td>
+                <td class="grade-${row.grade}">${row.grade}</td>
+                <td>${row.entered_on}</td>
+            </tr>`;
+        });
+    })
+    .catch(() => alert("Failed to load marks"));
+}
+
+
+function resetForm() {
+    document.getElementById("department").value = "";
+    document.getElementById("batch_year").value = "";
+    document.getElementById("register_no").value = "";
+    document.getElementById("markBody").innerHTML = "";
+}
+</script>
+
+</body>
+</html>

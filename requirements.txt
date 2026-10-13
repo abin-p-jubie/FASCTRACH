@@ -1,0 +1,12 @@
+
+download python latest version
+download SQLite
+download node js
+
+copy paste all the codes in terminal :
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+
+npm init -y
+npm install electron --save-dev
+npm start 

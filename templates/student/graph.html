@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Graph</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- DataLabels Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef4fb, #f8fbff);
+            padding-top: 120px;
+            color: #333;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #2b92ff, #09f0f4);
+            padding: 25px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+            z-index: 1000;
+        }
+
+        nav h2 {
+            color: #fff;
+            font-size: 22px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 14px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .card {
+            background: #fff;
+            padding: 32px;
+            border-radius: 18px;
+            max-width: 720px;
+            margin: auto;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .mode-text {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        canvas {
+            margin-top: 15px;
+            margin-right: 20px;
+            max-width: 100%;
+        }
+
+        .view-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 26px;
+            background: linear-gradient(135deg, #2b92ff, #09f0f4);
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav><h2>Attendance Graph</h2>
+    <div class="nav-links">
+    <a href="{{url_for('student_dashboard')}}">Dashboard</a>
+    <a href="{{ url_for('student_attendance_graph') }}">Attendance Graph</a>
+    <a href="{{ url_for('student_attendance') }}">Attendance Details</a>
+    <a href="{{url_for('academic_work')}}">Academic Work</a>
+    <a href="{{url_for('student_lecture_notes')}}">Lecture Notes</a>
+    <a href="{{url_for('student_notification')}}">Notification</a>
+    <a href="{{ url_for('home_page') }}">Logout</a>
+    </div></nav>
+
+<div class="card">
+
+    <h2>📊 Attendance Percentage – {{ student.full_name }}</h2>
+
+    <p class="mode-text">
+        {% if selected_semester == "Current Semester" %}
+            📅 Attendance calculated till today
+        {% else %}
+            📚 Semester-wise attendance (Total classes: 200)
+        {% endif %}
+    </p>
+
+    <form id="semesterForm" method="POST">
+        <label><strong>Select Semester:</strong></label>
+        <select name="semester" id="semester">
+            {% for sem in semesters %}
+                <option value="{{ sem }}" {% if sem == selected_semester %}selected{% endif %}>
+                    {{ sem }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <canvas id="attendanceChart" height="180" width=""></canvas>
+
+    <div style="text-align:center;">
+        <a href="{{ url_for('student_attendance') }}" class="view-btn">
+            📄 View Attendance Details
+        </a>
+    </div>
+
+</div>
+
+<script>
+    document.getElementById('semester').addEventListener('change', () => {
+        document.getElementById('semesterForm').submit();
+    });
+
+    const ctx = document.getElementById('attendanceChart');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Present', 'Absent', 'Late'],
+            datasets: [{
+                data: [
+                    {{ percentages['Present'] }},
+                    {{ percentages['Absent'] }},
+                    {{ percentages['Late'] }}
+                ],
+                backgroundColor: ['#38d538', '#ff4d6d', '#ffc107'],
+                hoverBackgroundColor: ['#2fb82f', '#e63e5c', '#e0a800'],
+                borderRadius: 6,
+                barThickness: 30
+            }]
+        },
+        plugins: [ChartDataLabels],
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        stepSize: 20,
+                        callback: value => value + '%'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Percentage (%)'
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'right',
+                    formatter: value => value > 0 ? value + '%' : '',
+                    font: { weight: 'bold', size: 14 },
+                    color: '#333'
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

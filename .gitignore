@@ -1,0 +1,7 @@
+node_modules/
+uploads/
+*.db
+*.sqbpro
+__pycache__/
+.env
+.vscode

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Login</title>
+    <style>
+
+        
+      body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #e9f1f7, #f4f6f8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Card container */
+.container {
+    background: #ffffff;
+    width: 420px;
+    padding: 35px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Heading */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Flash message */
+#flash-message {
+    position: absolute;
+    top: 20px;
+    background: #e7f3ff;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Form labels & inputs */
+form {
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #2b92ff;
+}
+
+/* Buttons */
+button {
+    padding: 10px 18px;
+    margin-top: 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #20fbff, #2b92ff);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button[type="reset"] {
+    background: #6c757d;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(43, 146, 255, 0.3);
+}
+
+/* Login link */
+a {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+    text-decoration: none;
+    color: #2b92ff;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #20fbff;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        padding: 30px;
+    }
+}
+
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Student Login</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <p style="color: red;">{{ messages[0] }}</p>
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+        <input name="register_no" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" placeholder="Register No" required>
+        <input name="email" type="email" style="text-transform: lowercase;" oninput="this.value = this.value.toLowerCase()" placeholder="Email" required>
+        <input name="dob" type="date" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" placeholder="Date of Birth" required>
+        <button type="submit">Login</button>
+        <a href="{{url_for('index_page')}}">Back</a>
+    </form>
+    </div>
+</body>
+</html>

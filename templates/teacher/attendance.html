@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Load Students & Periods with Attendance</title>
+  <style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 110px;
+    color: #333;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 34px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: #fff;
+    font-size: 18px; /* Slightly smaller font */
+    font-weight: 700;
+}
+
+
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= CLOCK ================= */
+.clock {
+    text-align: center;
+    padding: 18px 35px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    margin: 20px auto;
+    width: fit-content;
+}
+
+.time {
+    font-size: 42px;
+    font-weight: 800;
+    color: #2b92ff;
+}
+
+.date {
+    font-size: 16px;
+    color: #555;
+    margin-top: 4px;
+}
+
+/* ================= CARDS ================= */
+.form-box,
+.period-box,
+.student-box {
+    background: #ffffff;
+    padding: 22px 26px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    margin: 18px auto;
+    max-width: 900px;
+}
+
+/* ================= HEADINGS ================= */
+h3 {
+    margin-bottom: 12px;
+    color: #2b92ff;
+    font-weight: 700;
+}
+
+/* ================= FORM ELEMENTS ================= */
+label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 6px;
+}
+
+select {
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #cfdceb;
+    margin: 8px;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+select:focus {
+    border-color: #2b92ff;
+    box-shadow: 0 0 0 2px rgba(43,146,255,0.15);
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px 10px;
+    border: 1px solid #e3e9f0;
+    font-size: 14px;
+    text-align: center;
+}
+
+th {
+    background: #2b92ff;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+tr:nth-child(even) td {
+    background: #f9fbfe;
+}
+
+/* ================= BUTTONS ================= */
+.btn {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 2px;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-present {
+    background: #28a745;
+    color: white;
+}
+
+.btn-late {
+    background: #ffc107;
+    color: #222;
+}
+
+.btn-absent {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-select {
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+}
+
+/* ================= ATTENDANCE STATUS ================= */
+.attendance-status {
+    font-weight: 700;
+    margin-left: 6px;
+}
+
+/* ================= PERIOD STATES ================= */
+.active-period {
+    background: #e8f2ff !important;
+    box-shadow: inset 0 0 0 2px #2b92ff;
+}
+
+.completed-period {
+    background: #e6ffe9 !important;
+    opacity: 0.7;
+}
+
+/* ================= SUBMIT BUTTON ================= */
+#submitAttendanceBtn {
+    margin-top: 10px;
+    padding: 10px 22px;
+    font-size: 15px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    th, td {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .form-box,
+    .period-box,
+    .student-box {
+        margin: 14px;
+    }
+}
+
+  </style>
+</head>
+<body>
+  <nav><h2>Attendance</h2>
+  <div class="nav-links">
+    <a href="{{url_for('teacher_dashboard')}}">Dashboard</a>
+    <a href="{{url_for('periods')}}">Period</a>
+    <a href="{{url_for('attendance')}}">Attendance</a>
+    <a href="{{ url_for('attendance_details_page')}}">Attendance Details</a>
+    <a href="{{url_for('lecture_notes')}}" >Lecture Notes</a>
+    <a href="{{url_for('academic_task')}}">Academic Tasks</a>
+    <a href="{{url_for('mark_entry')}}">Mark Entry</a>
+    <a href="{{url_for('work_valuate')}}">Work Valuate</a>
+    <a href="{{url_for('teacher_notification')}}">Notification</a>
+    <a href="{{url_for('home_page')}}">Logout</a>
+    </div></nav>
+  <!-- Live Clock -->
+  <div class="clock">
+    <div id="time" class="time">--:--:--</div>
+    <div id="date" class="date">Loading date...</div>
+  </div>
+
+  <!-- Department & Year Selection -->
+  <div class="form-box">
+  <label for="department">Department: </label>
+  <select id="department" name="department" required>
+    <option value="">--Select Department--</option>
+    <optgroup label="B.SC.">
+      <option value="B.SC - MATHEMATICS">MATHEMATICS</option>
+      <option value="B.SC - COMPUTER SCIENCE">COMPUTER SCIENCE</option>
+      <option value="B.SC - CHEMISTRY">CHEMISTRY</option>
+      <option value="B.SC - MICROBIOLOGY">MICROBIOLOGY</option>
+      <option value="B.SC - PSYCHOLOGY">PSYCHOLOGY</option>
+    </optgroup>
+
+    <optgroup label="B.COM">
+      <option value="B.COM - FINANCE">FINANCE</option>
+      <option value="B.COM - ACCOUNTANCY">ACCOUNTANCY</option>
+      <option value="B.COM - CO-OPERATION">CO-OPERATION</option>
+    </optgroup>
+
+    <optgroup label="B.A.">
+      <option value="B.A - MALAYALAM">MALAYALAM</option>
+      <option value="B.A - ENGLISH">ENGLISH</option>
+      <option value="B.A - HISTORY">HISTORY</option>
+      <option value="B.A - ECONOMICS">ECONOMICS</option>
+    </optgroup>
+
+    <optgroup label="BTTM">
+      <option value="BTTM - TOURISM MANAGEMENT">TOURISM MANAGEMENT</option>
+    </optgroup>
+  </select>
+    <label for="year">Year: </label>
+    <select id="year">
+      <option value="">-- Select Year --</option>
+      <option value="First Year">First Year</option>
+      <option value="Second Year">Second Year</option>
+      <option value="Third Year">Third Year</option>
+      <option value="Fourth Year">Fourth Year</option>
+      <option value="Graduated">Graduated</option>
+    </select>
+  </div>
+
+  <!-- Periods of Current Day -->
+  <div class="period-box" id="periodBox" style="display:none;">
+    <h3>Today’s Periods & Subjects (<span id="todayName"></span>)</h3>
+    <label for="periodSelect">Active Period: </label>
+    <select id="periodSelect">
+      <option value="">-- Select Period --</option>
+    </select>
+    <table>
+      <thead>
+        <tr>
+          <th>Period No</th>
+          <th>Subject</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="periodTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Student List with Attendance -->
+<div class="student-box" id="studentBox" style="display:none;">
+  <h3>Student List & Attendance</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Register No</th>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Batch</th>
+        <th>Attendance</th>
+      </tr>
+    </thead>
+    <tbody id="studentTableBody"></tbody>
+  </table>
+  <div style="margin-top:15px; text-align:center;">
+    <button id="submitAttendanceBtn" class="btn btn-select" style="display:none;">Submit Attendance</button>
+  </div>
+</div>
+
+<script>
+  let activePeriod = null;       // Track selected period
+  let attendanceData = {};       // Store marked attendance
+
+  // --- Mark Attendance Function ---
+function markAttendance(registerNo, status) {
+  if (!activePeriod) {
+    alert("Please select a period first!");
+    return;
+  }
+
+  const statusEl = document.getElementById(`status-${registerNo}`);
+  statusEl.textContent = `${status} (P${activePeriod})`;
+  statusEl.style.color =
+    status === "Present" ? "green" :
+    status === "Late" ? "orange" : "red";
+
+  // Save locally
+  attendanceData[registerNo] = { period: activePeriod, status };
+
+  // --- Check if all students have been marked ---
+  const totalStudents = document.querySelectorAll("#studentTableBody tr").length;
+  const markedCount = Object.keys(attendanceData).length;
+
+  if (totalStudents > 0 && markedCount === totalStudents) {
+    document.getElementById("submitAttendanceBtn").style.display = "inline-block";
+  } else {
+    document.getElementById("submitAttendanceBtn").style.display = "none";
+  }
+}
+
+// --- Submit Attendance ---
+document.getElementById("submitAttendanceBtn").addEventListener("click", async () => {
+  const totalStudents = document.querySelectorAll("#studentTableBody tr").length;
+  if (Object.keys(attendanceData).length !== totalStudents) {
+    return alert("Please mark attendance for all students before submitting!");
+  }
+
+  try {
+    const response = await fetch("/submit_attendance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        department: document.getElementById("department").value,
+        year: document.getElementById("year").value,
+        period: activePeriod,
+        records: attendanceData
+      })
+    });
+
+    const result = await response.json();
+    if (result.success) {
+      alert(`Attendance for Period ${activePeriod} submitted successfully!`);
+      attendanceData = {};
+      document.getElementById("submitAttendanceBtn").style.display = "none";
+
+      // Reset student statuses
+      document.querySelectorAll(".attendance-status").forEach(el => {
+        el.textContent = "";
+        el.style.color = "black";
+      });
+
+      // Mark completed period
+      disableCompletedPeriod(activePeriod);
+
+      // Move to next period automatically if available
+      autoSelectNextPeriod();
+    } else {
+      alert("Failed to submit attendance.");
+    }
+  } catch (err) {
+    console.error("Error submitting attendance:", err);
+    alert("Error submitting attendance.");
+  }
+});
+
+  // --- Disable completed period ---
+  function disableCompletedPeriod(periodNo) {
+    // Dropdown
+    const dropdown = document.getElementById("periodSelect");
+    [...dropdown.options].forEach(opt => {
+      if (opt.value == periodNo) opt.disabled = true;
+    });
+
+    // Table
+    document.querySelectorAll("#periodTableBody tr").forEach(tr => {
+      if (tr.querySelector("td")?.textContent == periodNo) {
+        tr.classList.remove("active-period");
+        tr.classList.add("completed-period");
+        const btn = tr.querySelector("button");
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "Done";
+        }
+      }
+    });
+
+    activePeriod = null;
+  }
+
+  // --- Auto select next period ---
+  function autoSelectNextPeriod() {
+    const dropdown = document.getElementById("periodSelect");
+    const nextOption = [...dropdown.options].find(opt => opt.value && !opt.disabled);
+    if (nextOption) {
+      const nextPeriodNo = nextOption.value;
+      const row = [...document.querySelectorAll("#periodTableBody tr")]
+        .find(tr => tr.querySelector("td")?.textContent == nextPeriodNo);
+      if (row) setActivePeriod(nextPeriodNo, row);
+    } else {
+      alert("All periods completed for today 🎉");
+    }
+  }
+
+  // --- Live Clock ---
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('time').textContent = now.toLocaleTimeString();
+    document.getElementById('date').textContent = now.toLocaleDateString(undefined, {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    });
+    document.getElementById('todayName').textContent =
+      now.toLocaleDateString('en-US', { weekday: 'long' });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // --- Fetch Students & Periods ---
+  async function fetchData() {
+    const department = document.getElementById("department").value;
+    const year = document.getElementById("year").value;
+    if (!department || !year) return;
+
+    try {
+      const response = await fetch(`/load_data?department=${department}&year=${year}`);
+      const data = await response.json();
+
+      populateStudents(data.students || []);
+      populatePeriods(data.periods || []);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  }
+
+  // --- Populate Students ---
+  function populateStudents(students) {
+    const tbody = document.getElementById("studentTableBody");
+    tbody.innerHTML = "";
+    document.getElementById("studentBox").style.display = "block";
+
+    if (students.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No students found</td></tr>`;
+      return;
+    }
+
+    students.forEach(stu => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${stu.register_no}</td>
+        <td>${stu.full_name}</td>
+        <td>${stu.department}</td>
+        <td>${stu.batch_year}</td>
+        <td>
+          <button class="btn btn-present">P</button>
+          <button class="btn btn-late">L</button>
+          <button class="btn btn-absent">A</button>
+          <span class="attendance-status" id="status-${stu.register_no}"></span>
+        </td>
+      `;
+      tbody.appendChild(tr);
+
+      tr.querySelector(".btn-present").addEventListener("click", () => markAttendance(stu.register_no, "Present"));
+      tr.querySelector(".btn-late").addEventListener("click", () => markAttendance(stu.register_no, "Late"));
+      tr.querySelector(".btn-absent").addEventListener("click", () => markAttendance(stu.register_no, "Absent"));
+    });
+  }
+
+  // --- Populate Periods ---
+  function populatePeriods(periods) {
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    const todayPeriods = periods.filter(p => p.day.toLowerCase() === today.toLowerCase());
+
+    const pbody = document.getElementById("periodTableBody");
+    const pselect = document.getElementById("periodSelect");
+    pbody.innerHTML = "";
+    pselect.innerHTML = `<option value="">-- Select Period --</option>`;
+    document.getElementById("periodBox").style.display = "block";
+
+    if (todayPeriods.length === 0) {
+      pbody.innerHTML = `<tr><td colspan="3" style="text-align:center;">No periods today</td></tr>`;
+      return;
+    }
+
+    todayPeriods.forEach(p => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${p.period_number}</td>
+        <td>${p.subject}</td>
+        <td><button class="btn btn-select">Select</button></td>
+      `;
+      pbody.appendChild(tr);
+
+      const opt = document.createElement("option");
+      opt.value = p.period_number;
+      opt.textContent = `Period ${p.period_number} - ${p.subject}`;
+      pselect.appendChild(opt);
+
+      tr.querySelector(".btn-select").addEventListener("click", () => setActivePeriod(p.period_number, tr));
+    });
+  }
+
+  // --- Set Active Period ---
+  function setActivePeriod(periodNo, row) {
+    activePeriod = periodNo;
+    document.getElementById("periodSelect").value = periodNo;
+
+    // Highlight selected row
+    document.querySelectorAll("#periodTableBody tr").forEach(tr => tr.classList.remove("active-period"));
+    row.classList.add("active-period");
+  }
+
+  // --- Event Listeners ---
+  document.getElementById("department").addEventListener("change", fetchData);
+  document.getElementById("year").addEventListener("change", fetchData);
+</script>
+
+
+</body>
+</html>

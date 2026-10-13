@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Report</title>
+    <style>
+ /* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 110px;
+    color: #333;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 30px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.nav-links {
+    display: flex;
+    gap: 18px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= CARD ================= */
+.card {
+    margin: 22px 40px;
+    background: #ffffff;
+    padding: 26px;
+    border-radius: 16px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.1);
+}
+
+.card h2 {
+    margin-bottom: 12px;
+}
+
+.card p {
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* ================= FILTER FORM ================= */
+form {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+form input[type="date"] {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+form button {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: none;
+    background: #2b92ff;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.25s ease, transform 0.2s ease;
+}
+
+form button:hover {
+    background: #1f6fe0;
+    transform: translateY(-1px);
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #e3e6f0;
+    text-align: center;
+    font-size: 13px;
+}
+
+th {
+    background: #1f3c88;
+    color: white;
+    font-weight: 600;
+}
+
+/* ================= STATUS BOXES ================= */
+.present,
+.absent,
+.late {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    margin: auto;
+}
+
+.present { background: #3bd23b; }
+.absent  { background: #ff4d6d; }
+.late    { background: #ffc107; }
+
+/* ================= WEEKEND ================= */
+.weekend-row {
+    background-color: #ffeaea;
+}
+
+/* ================= TOTAL ROW ================= */
+table tr:last-child {
+    font-weight: bold;
+    background: #f2f6ff;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 900px) {
+    .card {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <h2>Attendance Details</h2>
+    <div class="nav-links">
+    <a href="{{url_for('student_dashboard')}}">Dashboard</a>
+    <a href="{{ url_for('student_attendance_graph') }}">Attendance Graph</a>
+    <a href="{{ url_for('student_attendance') }}">Attendance Details</a>
+    <a href="{{url_for('academic_work')}}">Academic Work</a>
+    <a href="{{url_for('student_lecture_notes')}}">Lecture Notes</a>
+    <a href="{{url_for('student_notification')}}">Notification</a>
+    <a href="{{ url_for('home_page') }}">Logout</a>
+    </div>
+</nav>
+
+<!-- HEADER CARD -->
+<div class="card">
+    <h2>Attendance Report</h2>
+    <p><strong>Name:</strong> {{ student.full_name }}</p>
+    <p><strong>Register No:</strong> {{ student.register_no }}</p>
+
+    <form method="POST">
+        From:
+        <input type="date" name="from_date" value="{{ from_date }}">
+        To:
+        <input type="date" name="to_date" value="{{ to_date }}">
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<!-- TABLE CARD -->
+<div class="card">
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>I</th>
+        <th>II</th>
+        <th>III</th>
+        <th>IV</th>
+        <th>V</th>
+        <th>Total</th>
+    </tr>
+
+    {% for date, info in attendance.items() %}
+    <tr class="{% if info.total_periods == 0 %}weekend-row{% endif %}">
+
+        <td>{{ date }}</td>
+        <td>{{ info.day }}</td>
+
+        {% for p in range(1,6) %}
+        <td>
+            {% if p in info.periods %}
+                {% if info.periods[p].status == 'Present' %}
+                    <div class="present"></div>
+                {% elif info.periods[p].status == 'Absent' %}
+                    <div class="absent"></div>
+                {% else %}
+                    <div class="late"></div>
+                {% endif %}
+                <br>
+                <small>{{ info.periods[p].subject }}</small>
+            {% endif %}
+        </td>
+        {% endfor %}
+
+        <!-- ✅ DAILY TOTAL (backend calculated) -->
+        <td>{{ info.present_count }}/{{ info.total_periods }}</td>
+    </tr>
+    {% endfor %}
+
+    <!-- ✅ FINAL TOTAL ROW -->
+    <tr style="font-weight:bold; background:#f1f5ff;">
+        <td colspan="7">TOTAL</td>
+        <td>{{ overall_present }}/{{ overall_total }}</td>
+    </tr>
+
+</table>
+</div>
+
+</body>
+</html>

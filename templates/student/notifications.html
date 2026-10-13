@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Notifications</title>
+    <style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 110px; /* navbar space */
+    color: #333;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 10px 24px; /* reduced height */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 18px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= PAGE TITLE ================= */
+h2 {
+    text-align: center;
+    margin: 20px 0;
+    color: #1e293b;
+}
+
+/* ================= FILTER BOX ================= */
+.filter-box {
+    max-width: 700px;
+    margin: 0 auto 25px;
+    background: white;
+    padding: 16px 18px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.filter-box form {
+    display: flex;
+    gap: 12px;
+}
+
+.filter-box input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #cfdceb;
+    font-size: 14px;
+    outline: none;
+}
+
+.filter-box input:focus {
+    border-color: #2b92ff;
+    box-shadow: 0 0 0 2px rgba(43,146,255,0.15);
+}
+
+.filter-box button {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.filter-box button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(43,146,255,0.35);
+}
+
+/* ================= NOTIFICATION LIST ================= */
+.notification {
+    max-width: 900px;
+    margin: 0 auto 15px;
+    background: white;
+    padding: 16px 18px;
+    border-left: 6px solid #2563eb;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.notification p {
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.role {
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* ================= EMPTY STATE ================= */
+p:only-child {
+    text-align: center;
+    color: #64748b;
+    margin-top: 20px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .filter-box form {
+        flex-direction: column;
+    }
+
+    .filter-box button {
+        width: 100%;
+    }
+
+    .notification {
+        margin: 0 10px 15px;
+    }
+}
+    </style>
+</head>
+<body>
+    <nav><h2>Notifications</h2>
+    <div class="nav-links">
+    <a href="{{url_for('student_dashboard')}}">Dashboard</a>
+    <a href="{{ url_for('student_attendance_graph') }}">Attendance Graph</a>
+    <a href="{{ url_for('student_attendance') }}">Attendance Details</a>
+    <a href="{{url_for('academic_work')}}">Academic Work</a>
+    <a href="{{url_for('student_lecture_notes')}}">Lecture Notes</a>
+    <a href="{{url_for('student_notification')}}">Notification</a>
+    <a href="{{ url_for('home_page') }}">Logout</a>
+    </div></nav>
+<h2>Notifications ({{ role }})</h2>
+
+<div class="filter-box">
+    <form method="get">
+        <input type="text" name="search" placeholder="Search notification">
+
+        <button type="submit">Filter</button>
+    </form>
+</div>
+
+{% if notifications %}
+    {% for n in notifications %}
+        <div class="notification">
+            <p>{{ n["message"] }}</p>
+            <div class="role">
+                Visible to: {{ n["visibility"] }} |
+                Posted by: {{ n["created_by"] }}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No notifications found.</p>
+{% endif %}
+
+</body>
+</html>

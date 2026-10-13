@@ -1,0 +1,139 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Register</title>
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #20fbff, #2b92ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Card container */
+.container {
+    background: #ffffff;
+    width: 420px;
+    padding: 35px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Heading */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Flash message */
+#flash-message {
+    position: absolute;
+    top: 20px;
+    background: #e7f3ff;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Form labels & inputs */
+form {
+    width: 100%;
+}
+
+input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #2b92ff;
+}
+
+/* Buttons */
+button {
+    padding: 10px 18px;
+    margin-top: 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #20fbff, #2b92ff);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button[type="reset"] {
+    background: #6c757d;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(43, 146, 255, 0.3);
+}
+
+/* Login link */
+a {
+    display: block;
+    margin-top: 15px;
+    text-align: center;
+    text-decoration: none;
+    color: #2b92ff;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #20fbff;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        padding: 30px;
+    }
+}
+
+    </style>
+</head>
+<body>
+  <div class="container">
+     {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div id="flash-message">
+      {% for category, message in messages %}
+        <p style="color: black;">{{ message }}</p>
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(() => {
+        var msg = document.getElementById('flash-message');
+        if (msg) msg.style.display = 'none';
+      }, 1000);
+    </script>
+  {% endif %}
+{% endwith %}
+    <h2>Admin Register</h2>
+    <form action="/admin_register" method="post">
+        Full Name:<br><input type="text" name="name" placeholder="Full Name" required style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" placeholder="FULL NAME" /><br><br>
+        Email:<br><input type="email" style="text-transform: lowercase;" oninput="this.value = this.value.toLowerCase()" name="email"  placeholder="Email" required /><br><br>
+        Contact:<br><input type="tel" pattern="\d{10}" maxlength="10" name="contact" placeholder="Contact" required /><br><br>
+        Password:<br><input type="password" name="password" placeholder="Password" required /><br><br>
+        Confirm Password:<br><input type="password" name="confirm_password" placeholder="Confirm Password" required /><br><br>
+        <button type="submit">Register</button><button type="reset">Reset</button><br>
+        <a href="{{ url_for('admin_login') }}">Login</a>
+    </form>
+    </div>
+</body>
+</html>

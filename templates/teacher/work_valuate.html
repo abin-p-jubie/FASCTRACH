@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work Valuation | Teacher</title>
+  <style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ================= PAGE ================= */
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 120px; /* space for navbar */
+    color: #333;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: #fff;
+    font-size: 18px; /* Slightly smaller font */
+    font-weight: 700;
+}
+
+
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= PAGE TITLE ================= */
+h2 {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 24px;
+    color: #1e293b;
+}
+
+/* ================= FILTER BOX ================= */
+.filter-box {
+    max-width: 900px;
+    margin: 0 auto 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.filter-box select,
+.filter-box button {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #cfdceb;
+    font-size: 14px;
+    outline: none;
+    transition: 0.25s;
+}
+
+.filter-box select:focus {
+    border-color: #2b92ff;
+    box-shadow: 0 0 0 3px rgba(43, 146, 255, 0.15);
+}
+
+.filter-box button {
+    grid-column: span 2;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.filter-box button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(43, 146, 255, 0.35);
+}
+
+/* ================= EXPORT PDF BUTTON ================= */
+#exportPdfBtn {
+    display: block;
+    margin: 15px auto 25px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: #dc2626;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+#exportPdfBtn:hover {
+    background: #b91c1c;
+    transform: translateY(-2px);
+}
+
+/* ================= SUMMARY BOX ================= */
+.summary {
+    background: #ffffff;
+    padding: 16px 20px;
+    border-radius: 10px;
+    border-left: 5px solid #2563eb;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    width: fit-content;
+    transition: 0.3s;
+}
+
+.summary h3 {
+    margin-bottom: 8px;
+    color: #1e3a8a;
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+th, td {
+    padding: 10px 12px;
+    text-align: center;
+    font-size: 14px;
+    border-bottom: 1px solid #e5e7eb;
+    transition: 0.2s;
+}
+
+th {
+    background: #2563eb;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+tr:nth-child(even) td {
+    background: #f9fbff;
+}
+
+tr:hover td {
+    background: #eef4ff;
+}
+
+/* ================= STATUS ================= */
+.status-submitted {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.status-pending {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+/* ================= LINKS & BUTTONS ================= */
+.view-link {
+    color: #2563eb;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.25s;
+}
+
+.view-link:hover {
+    text-decoration: underline;
+}
+
+.download-link {
+    background: #0d9488;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.download-link:hover {
+    background: #0f766e;
+}
+
+.reupload-btn {
+    background: #f97316;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.reupload-btn:hover {
+    background: #ea580c;
+}
+
+.done-btn {
+    background: #16a34a;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 4px;
+    transition: 0.25s;
+}
+
+.not-done-btn {
+    background: #dc2626;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.done-btn:hover {
+    background: #15803d;
+}
+
+.not-done-btn:hover {
+    background: #b91c1c;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .filter-box {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-box button {
+        grid-column: span 1;
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 6px;
+    }
+}
+
+
+  </style>
+</head>
+<body>
+  <nav><h2>Work Evaluate</h2>
+  <div class="nav-links">
+    <a href="{{url_for('teacher_dashboard')}}">Dashboard</a>
+    <a href="{{url_for('periods')}}">Period</a>
+    <a href="{{url_for('attendance')}}">Attendance</a>
+    <a href="{{ url_for('attendance_details_page')}}">Attendance Details</a>
+    <a href="{{url_for('lecture_notes')}}" >Lecture Notes</a>
+    <a href="{{url_for('academic_task')}}">Academic Tasks</a>
+    <a href="{{url_for('mark_entry')}}">Mark Entry</a>
+    <a href="{{url_for('work_valuate')}}">Work Valuate</a>
+    <a href="{{url_for('teacher_notification')}}">Notification</a>
+    <a href="{{url_for('home_page')}}">Logout</a>
+    </div></nav>
+  <h2>📘 Work Valuation</h2>
+
+  <div class="filter-box">
+    <select id="department">
+      <option value="">--Select Department--</option>
+      <optgroup label="B.SC.">
+        <option value="B.SC - MATHEMATICS">B.SC - MATHEMATICS</option>
+        <option value="B.SC - COMPUTER SCIENCE">B.SC - COMPUTER SCIENCE</option>
+        <option value="B.SC - CHEMISTRY">B.SC - CHEMISTRY</option>
+        <option value="B.SC - MICROBIOLOGY">B.SC - MICROBIOLOGY</option>
+        <option value="B.SC - PSYCHOLOGY">B.SC - PSYCHOLOGY</option>
+      </optgroup>
+      <optgroup label="B.COM">
+        <option value="B.COM - FINANCE">B.COM - FINANCE</option>
+        <option value="B.COM - ACCOUNTANCY">B.COM - ACCOUNTANCY</option>
+        <option value="B.COM - CO-OPERATION">B.COM - CO-OPERATION</option>
+      </optgroup>
+      <optgroup label="B.A.">
+        <option value="B.A - MALAYALAM">B.A - MALAYALAM</option>
+        <option value="B.A - ENGLISH">B.A - ENGLISH</option>
+        <option value="B.A - HISTORY">B.A - HISTORY</option>
+        <option value="B.A - ECONOMICS">B.A - ECONOMICS</option>
+      </optgroup>
+      <optgroup label="BTTM">
+        <option value="BTTM - TOURISM MANAGEMENT">BTTM - TOURISM MANAGEMENT</option>
+      </optgroup>
+    </select>
+
+    <select id="semester">
+      <option value="">Select Semester</option>
+      <option value="Semester 1">Semester 1</option>
+      <option value="Semester 2">Semester 2</option>
+      <option value="Semester 3">Semester 3</option>
+      <option value="Semester 4">Semester 4</option>
+      <option value="Semester 5">Semester 5</option>
+      <option value="Semester 6">Semester 6</option>
+      <option value="Semester 7">Semester 7</option>
+      <option value="Semester 8">Semester 8</option>
+    </select>
+
+    <select id="work_type">
+      <option value="">--Select Work Type--</option>
+      <option value="Workshop">Workshop</option>
+      <option value="Assignment">Assignment</option>
+      <option value="Assessment">Assessment</option>
+      <option value="Research Topic">Research Topic</option>
+      <option value="Project">Project</option>
+      <option value="Lab">Lab</option>
+    </select>
+
+    <button onclick="loadSubmissions()">Load Submissions</button>
+  </div>
+
+  <button id="exportPdfBtn" style="display:none;">📄 Export as PDF</button>
+
+  <div id="submissionTable"></div>
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    let selectedTaskId = null;
+
+    // -----------------------------------------------------
+    // LOAD SUBMISSIONS
+    // -----------------------------------------------------
+    window.loadSubmissions = function () {
+        const dept = document.getElementById("department").value;
+        const sem = document.getElementById("semester").value;
+        const workType = document.getElementById("work_type").value;
+
+        if (!dept || !sem || !workType) {
+            alert("Please select Department, Semester, and Work Type.");
+            return;
+        }
+
+        fetch(`/get_submissions?department=${encodeURIComponent(dept)}&semester=${encodeURIComponent(sem)}&work_type=${encodeURIComponent(workType)}`)
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                const task = data.task_info;
+                const submissions = data.students;
+                selectedTaskId = task.task_id;
+
+                document.getElementById("exportPdfBtn").style.display = "block";
+
+                let workDetails = `
+                <div class="summary">
+                    <h3>📘 Work Details</h3>
+                    <p><strong>Department:</strong> ${task.department}</p>
+                    <p><strong>Semester:</strong> ${task.semester}</p>
+                    <p><strong>Work Type:</strong> ${task.category}</p>
+                    <p><strong>Title:</strong> ${task.title}</p>
+                    <p><strong>Description:</strong> ${task.description}</p>
+                    <p><strong>Deadline:</strong> ${task.deadline}</p>
+                </div><br>`;
+
+                let submitted = submissions.filter(s => s.status === "Submitted").length;
+                let notSubmitted = submissions.length - submitted;
+
+                let html = `
+                ${workDetails}
+                <table>
+                <thead>
+                <tr>
+                    <th>Register No</th>
+                    <th>Student Name</th>
+                    <th>Semester</th>
+                    <th>Status</th>
+                    <th>View</th>
+                    <th>Download</th>
+                    <th>Re-Upload</th>
+                    <th>Submitted On</th>
+                    <th>Done / Not</th>
+                </tr>
+                </thead>
+                <tbody>
+                `;
+
+                submissions.forEach(s => {
+                    html += `
+                <tr>
+                    <td>${s.register_no}</td>
+                    <td>${s.full_name}</td>
+                    <td>${s.semester}</td>
+
+                    <td class="${s.status === "Submitted" ? "status-submitted" : "status-pending"}">
+                        ${s.status === "Submitted" ? "✅ Submitted" : "❌ Not Submitted"}
+                    </td>
+
+                    <td>${s.file_path ? `<a href="/uploads/${s.file_path}" target="_blank" class="view-link">📎 View</a>` : "—"}</td>
+                    <td>${s.file_path ? `<a href="/uploads/${s.file_path}" download class="download-link">Download</a>` : "—"}</td>
+
+                    <td>
+                        <button class="reupload-btn" onclick="allowReupload(${s.student_id}, ${task.task_id})">
+                            Re-Upload
+                        </button>
+                    </td>
+
+                    <td>${s.submitted_on || "—"}</td>
+
+                    <td>
+                        <button class="done-btn"
+                            onclick="toggleDone(this); updateDoneStatus(${s.student_id}, ${task.task_id}, 'Done')">
+                            Done
+                        </button>
+
+                        <button class="not-done-btn"
+                            onclick="toggleDone(this); updateDoneStatus(${s.student_id}, ${task.task_id}, 'Not Done')">
+                            Not Done
+                        </button>
+                    </td>
+                </tr>`;
+                });
+
+                html += `
+                </tbody>
+                </table>
+
+                <div class="summary">
+                    <p><strong>Total Students:</strong> ${submissions.length}</p>
+                    <p><strong>Submitted:</strong> ${submitted}</p>
+                    <p><strong>Not Submitted:</strong> ${notSubmitted}</p>
+                </div>`;
+
+                document.getElementById("submissionTable").innerHTML = html;
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Error loading submissions.");
+            });
+    };
+
+    // -----------------------------------------------------
+    // ALLOW REUPLOAD
+    // -----------------------------------------------------
+    window.allowReupload = function (studentId, taskId) {
+        if (!confirm("Allow this student to re-upload?")) return;
+
+        fetch(`/allow_reupload/${studentId}/${taskId}`, { method: "POST" })
+            .then(res => res.json())
+            .then(data => alert(data.message || "Updated successfully!"))
+            .catch(() => alert("Error updating re-upload permission."));
+    };
+
+    // -----------------------------------------------------
+    // SAVE MARK ENTRY (if button exists)
+    // -----------------------------------------------------
+    const saveBtn = document.getElementById("saveMarkEntryBtn");
+
+    if (saveBtn) {
+        saveBtn.addEventListener("click", () => {
+
+            if (!selectedTaskId) {
+                alert("Load a work first.");
+                return;
+            }
+
+            const rows = Array.from(document.querySelectorAll("tbody tr"));
+            const studentData = rows.map(row => {
+
+                const registerNo = row.children[0].textContent;
+                const fullName = row.children[1].textContent;
+                const statusText = row.children[3].textContent.includes("Submitted") ? "Submitted" : "Not Submitted";
+                const doneStatus = statusText === "Submitted" ? "Done" : "Not Done";
+
+                // Extract student_id from first button
+                const studentId = row.querySelector("button").getAttribute("onclick").match(/\d+/)[0];
+
+                return {
+                    student_id: studentId,
+                    register_no: registerNo,
+                    full_name: fullName,
+                    status: statusText,
+                    done_status: doneStatus
+                };
+            });
+
+            fetch(`/save_mark_entry/${selectedTaskId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ students: studentData })
+            })
+                .then(res => res.json())
+                .then(data => alert(data.message || "Saved!"))
+                .catch(() => alert("Error saving mark entry."));
+        });
+    }
+
+    // -----------------------------------------------------
+    // DONE / NOT DONE BUTTON COLOR LOGIC
+    // -----------------------------------------------------
+    window.toggleDone = function (button) {
+        const row = button.closest("tr");
+
+        if (button.classList.contains("done-btn")) {
+            row.style.backgroundColor = "#c8f7c5"; // green
+        } else {
+            row.style.backgroundColor = "#f7c5c5"; // red
+        }
+    };
+
+    // -----------------------------------------------------
+    // UPDATE DONE STATUS IN DATABASE
+    // -----------------------------------------------------
+    window.updateDoneStatus = function (studentId, taskId, status) {
+        fetch("/update_done_status", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ student_id: studentId, task_id: taskId, done_status: status })
+        })
+            .then(res => res.json())
+            .then(data => console.log(data.message))
+            .catch(err => console.error(err));
+    };
+
+    // -----------------------------------------------------
+    // EXPORT PDF FIXED
+    // -----------------------------------------------------
+    const exportBtn = document.getElementById("exportPdfBtn");
+
+    if (exportBtn) {
+        exportBtn.addEventListener("click", () => {
+            if (!selectedTaskId) {
+                alert("Load a work first.");
+                return;
+            }
+            window.open(`/export_submissions_pdf/${selectedTaskId}`, "_blank");
+        });
+    }
+
+});
+</script>
+
+
+</body>
+</html>

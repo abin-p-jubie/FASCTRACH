@@ -1,0 +1,167 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 100px;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: #fff;
+    font-size: 18px; /* Slightly smaller font */
+    font-weight: 700;
+}
+
+
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= FLASH MESSAGE ================= */
+#flash-message {
+    position: fixed;
+    top: 85px;
+    right: 30px;
+    background: #e8f8ee;
+    color: #1e7e34;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    animation: slideIn 0.4s ease;
+    z-index: 1100;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ================= CONTENT ================= */
+h2 {
+    margin: 20px 40px 10px;
+    color: #1f3c88;
+}
+
+/* ================= INFO CARD ================= */
+p {
+    margin: 8px 40px;
+    font-size: 15px;
+    color: #333;
+}
+
+p strong {
+    color: #1f3c88;
+}
+
+/* Optional Card Wrapper (recommended) */
+.dashboard-card {
+    margin: 20px 40px;
+    background: #ffffff;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.1);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    .nav-links {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    h2,
+    p,
+    .dashboard-card {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}
+</style>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div id="flash-message">
+      {% for category, message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+    <script>
+      setTimeout(() => {
+        var msg = document.getElementById('flash-message');
+        if (msg) msg.style.display = 'none';
+      }, 1000);
+    </script>
+    {% endif %}
+    {% endwith %}
+    <nav>
+    <h2>Dashboard</h2>
+    <div class="nav-links">
+      <a href="{{url_for('admin_dashboard')}}">Dashboard</a>
+      <a href="{{url_for('teacher_handle')}}">Teacher Handle</a>
+      <a href="{{url_for('students')}}">Student Handle</a>
+      <a href="{{url_for('student_attendance_details')}}">Attendance Details</a>
+      <a href="{{url_for('student_mark_details')}}">Mark Details</a>
+      <a href="{{url_for('notification_update')}}">Notification</a>
+      <a href="{{url_for('feedback_handle')}}">Feedback</a>
+      <a href="{{url_for('home_page')}}">Logout</a>
+    </nav>
+  </div>
+  <div class="dashboard-card">
+   <h2>Welcome</h2>
+    <p>{{ admin_name }}</p>
+    <p> {{ admin_email }}</p>
+   </div>
+</body>
+</html>

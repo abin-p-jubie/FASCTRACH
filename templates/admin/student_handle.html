@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Handle</title>
+    <style>
+ /* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 90px;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 16px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 18px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+/* ================= PAGE LAYOUT ================= */
+h2, h3 {
+    margin: 20px 30px 10px;
+    color: #1f3c88;
+}
+
+.flash {
+    margin: 10px 30px;
+    padding: 10px 14px;
+    background: #e8f8ee;
+    color: #1e7e34;
+    border-left: 4px solid #28a745;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+/* ================= FORMS ================= */
+form {
+    margin: 15px 30px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+form input,
+form select {
+    padding: 10px 12px;
+    border: 1px solid #cfd8dc;
+    border-radius: 6px;
+    font-size: 14px;
+    min-width: 180px;
+}
+
+form label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #444;
+    align-self: center;
+}
+
+form button {
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+/* ================= TABLE ================= */
+table {
+    width: calc(100% - 60px);
+    margin: 20px 30px;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+th {
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+    padding: 12px;
+    font-size: 14px;
+    text-align: center;
+}
+
+td {
+    padding: 10px;
+    font-size: 13px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+tr:nth-child(even) {
+    background: #f8fbff;
+}
+
+tr:hover {
+    background: #eef6ff;
+}
+
+/* ================= ACTION LINKS ================= */
+td a {
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin: 2px 0;
+}
+
+td a[href*="delete"] {
+    color: #e53935;
+}
+
+td a[href*="edit"] {
+    color: #1e88e5;
+}
+
+td a:hover {
+    text-decoration: underline;
+}
+
+/* ================= PAGINATION ================= */
+.pagination,
+div[style*="margin-top"] {
+    margin: 20px 30px;
+    font-weight: bold;
+}
+
+.pagination a,
+div[style*="margin-top"] a {
+    margin: 0 8px;
+    color: #1e88e5;
+    text-decoration: none;
+}
+
+.pagination a:hover,
+div[style*="margin-top"] a:hover {
+    text-decoration: underline;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    form {
+        flex-direction: column;
+    }
+
+    table {
+        font-size: 12px;
+        overflow-x: auto;
+        display: block;
+    }
+}
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
+        form { margin-bottom: 20px; }
+        .flash { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav><h2>Student Handle</h2>
+        <div class="nav-links">
+    <a href="{{url_for('admin_dashboard')}}">Dashboard</a>
+      <a href="{{url_for('teacher_handle')}}">Teacher Handle</a>
+      <a href="{{url_for('students')}}">Student Handle</a>
+      <a href="{{url_for('student_attendance_details')}}">Attendance Details</a>
+      <a href="{{url_for('student_mark_details')}}">Mark Details</a>
+      <a href="{{url_for('notification_update')}}">Notification</a>
+      <a href="{{url_for('feedback_handle')}}">Feedback</a>
+      <a href="{{url_for('home_page')}}">Logout</a>
+      </div>
+    </nav>
+    <h2>Add Student</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+    <form method="POST" action="">
+        <input name="register_no" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" placeholder="Register No" required>
+        <input name="admission_no"  placeholder="ADMISSION NO" required>
+        <input name="full_name" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" placeholder="FULL NAME" required>
+        <input name="email" style="text-transform: lowercase;" oninput="this.value = this.value.toLowerCase()" type="email" placeholder="EMAIL" required>
+        <input type="tel" pattern="\d{10}" maxlength="10" name="contact" placeholder="CONTACT" required />
+        <label for="DOB">DOB:</label><input name="dob" type="date" style="text-transform: uppercase;" oninput="this.value = this.value.toUpperCase()" required>
+        <label for="gender">Gender:</label>
+        <select name="gender" id="" required>
+            <option value="">-- Select Option --</option>
+            <option value="Male">MALE</option>
+            <option value="Female">FEMALE</option>
+            <option value="Others">OTHERS</option>
+        </select>
+        <label for="department">Department:</label>
+<select name="department" id="department" required>
+  <optgroup label="B.SC.">
+    <option value="B.SC - MATHEMATICS">MATHEMATICS</option>
+    <option value="B.SC - COMPUTER SCIENCE">COMPUTER SCIENCE</option>
+    <option value="B.SC - CHEMISTRY">CHEMISTRY</option>
+    <option value="B.SC - MICROBIOLOGY">MICROBIOLOGY</option>
+    <option value="B.SC - PSYCHOLOGY">PSYCHOLOGY</option>
+  </optgroup>
+  <optgroup label="B.COM">
+    <option value="B.COM - FINANCE">FINANCE</option>
+    <option value="B.COM - ACCOUNTANCY">ACCOUNTANCY</option>
+    <option value="B.COM - CO-OPERATION">CO-OPERATION</option>
+  </optgroup>
+  <optgroup label="B.A.">
+    <option value="B.A - MALAYALAM">MALAYALAM</option>
+    <option value="B.A - ENGLISH">ENGLISH</option>
+    <option value="B.A - HISTORY">HISTORY</option>
+    <option value="B.A - ECONOMICS">ECONOMICS</option>
+  </optgroup>
+  <optgroup label="BTTM">
+    <option value="BTTM - TOURISM MANAGEMENT">TOURISM MANAGEMENT</option>
+  </optgroup>
+</select>
+
+        <input name="batch_year" type="number" placeholder="Batch Year (e.g., 2022)" required>
+        <button type="submit">Add Student</button>
+    </form>
+<h2>Filter Students</h2>
+<form method="GET" action="{{ url_for('students') }}">
+    <input type="text" name="search_reg" value="{{ request.args.get('search_reg', '') }}" placeholder="Search by Register No">
+    <input type="text" name="search_name" value="{{ request.args.get('search_name', '') }}" placeholder="Search by Name">
+    <input type="text" name="search_department" value="{{ request.args.get('search_department', '') }}" placeholder="Search by Department">
+    <button type="submit">Search</button>
+</form>
+<h3>Filter by Study Status</h3>
+<form method="GET" action="{{ url_for('students') }}">
+    <label for="Batch Year">Batch Year:</label>
+    <select name="batch_year" id="">
+        <option value="">-- Select Option --</option>
+        <option value="First Year">First Year</option>
+        <option value="Second Year">Second Year</option>
+        <option value="Third Year">Third Year</option>
+        <option value="Forth Year / Graduated">Forth Year / Graduated</option>
+        <option value="Graduated">Graduated</option>
+    </select>
+    <label><input type="radio" name="year_filter" value="studying" {% if request.args.get('year_filter') == 'studying' %}checked{% endif %}> Studying</label>
+    <label><input type="radio" name="year_filter" value="studied" {% if request.args.get('year_filter') == 'studied' %}checked{% endif %}> Studied</label>
+    <label><input type="radio" name="year_filter" value="" {% if not request.args.get('year_filter') %}checked{% endif %}> All</label>
+    <button type="submit">Apply</button>
+</form>
+
+    <h2>Student List</h2>
+    <table>
+        <tr>
+            <th>Register No</th>
+            <th>Admission No</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Gender</th>
+            <th>DOB</th>
+            <th>Age</th>
+            <th>Department</th>
+            <th>Batch</th>
+            <th>Year</th>
+            <th>Action</th>
+        </tr>
+        {% for s in students %}
+        <tr>
+            <td>{{ s[1] }}</td>
+            <td>{{ s[2] }}</td>
+            <td>{{ s[3] }}</td>
+            <td>{{ s[4] }}</td>
+            <td>{{ s[5] }}</td>
+            <td>{{ s[6] }}</td>
+            <td>{{ s[7] }}</td>
+            <td>{{ s[8] }}</td>
+            <td>{{ s[9] }}</td>
+            <td>{{ s[10] }}</td>
+            <td>
+        {% set diff = current_year - s['batch_year'] %}
+        {% if diff == 0 %}
+            First Year
+        {% elif diff == 1 %}
+            Second Year
+        {% elif diff == 2 %}
+            Third Year
+        {% elif diff == 3 %}
+            Fourth Year / Graduated
+        {% else %}
+            Graduated
+        {% endif %}
+        </td>
+<td>
+    <a href="{{ url_for('edit_student', id=s[0]) }}">Edit</a> |
+    <a href="{{ url_for('delete_student', id=s[0]) }}" onclick="return confirm('Are you sure?')">Delete</a>
+</td>
+
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

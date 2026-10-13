@@ -1,0 +1,73 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #20fbff, #2b92ff);
+}
+
+.container {
+    background: #ffffff;
+    padding: 40px 50px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    margin-bottom: 30px;
+    color: #1e3c72;
+    font-size: 32px;
+}
+
+.links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.links a {
+    text-decoration: none;
+    padding: 12px;
+    background: linear-gradient(135deg, #20fbff, #2b92ff);
+    color: white;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.links a:hover {
+    transform: translateY(-2px);
+     box-shadow: 0 6px 15px rgba(43, 146, 255, 0.4);
+    background: linear-gradient(135deg, #2b92ff, #20fbff);
+}
+
+
+
+    </style>
+</head>
+<body>
+   <div class="container">
+        <h1>FASCTrack</h1>
+        <div class="links">
+            <a href="{{url_for('admin_login')}}">Admin</a>
+            <a href="{{url_for('teacher_login')}}">Teacher</a>
+            <a href="{{url_for('student_login')}}">Student</a>
+            <a href="{{url_for('feedback')}}">Feedback</a>
+        </div>
+    </div>
+</body>
+</html>

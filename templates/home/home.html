@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #20fbff, #2b92ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: #ffffff;
+    width: 450px;
+    padding: 50px 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.shadow-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+
+    /* Shadow without background */
+    filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.4));
+}
+.welcome {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 34px;
+    color: #333;
+    margin-bottom: 30px;
+    
+}
+
+.brand {
+    font-style: italic;
+    color: #2b92ff;
+}
+
+
+.enter-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 45px;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #20fbff, #2b92ff);
+    color: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+}
+
+.enter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(43, 146, 255, 0.4);
+    background: linear-gradient(135deg, #2b92ff, #20fbff);
+}
+
+    </style>
+</head>
+<body>
+
+
+<div class="container">
+    <img src="{{ url_for('static', filename='image/logo.png') }}" alt="Logo" width="150" class="shadow-img">
+    <h1 class="welcome">
+    Welcome to <span class="brand">FASCTrack</span>
+</h1>
+
+
+    <a href="{{ url_for('index_page') }}" class="enter-btn">
+        Enter
+    </a>
+</div>
+
+</body>
+</html>

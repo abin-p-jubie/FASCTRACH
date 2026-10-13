@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weekly Period Management</title>
+<style>
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PAGE ================= */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eef4fb, #f8fbff);
+    padding-top: 120px;
+    color: #333;
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    padding: 25px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+nav h2 {
+    color: #fff;
+    font-size: 18px; /* Slightly smaller font */
+    font-weight: 700;
+}
+
+
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+}
+
+.nav-links a:last-child {
+    background: rgba(255,255,255,0.35);
+}
+
+/* ================= CONTAINER ================= */
+.container {
+    max-width: 1000px;
+    margin: auto;
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* ================= HEADINGS ================= */
+h2 {
+    text-align: center;
+    margin-bottom: 18px;
+    color: #2b92ff;
+}
+
+/* ================= FORM ================= */
+form {
+    background: #f8fbff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    border: 1px solid #e1ecf7;
+}
+
+label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border: 1px solid #cfdceb;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+select:focus {
+    border-color: #2b92ff;
+    box-shadow: 0 0 0 2px rgba(43,146,255,0.15);
+}
+
+/* ================= BUTTONS ================= */
+button {
+    background: linear-gradient(135deg, #2b92ff, #09f0f4);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(43,146,255,0.3);
+    opacity: 0.95;
+}
+
+/* ================= TABLE ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+th, td {
+    border: 1px solid #e3e9f0;
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+th {
+    background: #2b92ff;
+    color: white;
+    font-weight: 600;
+}
+
+tr:nth-child(even) td {
+    background: #f9fbfe;
+}
+
+/* ================= DELETE BUTTON ================= */
+.delete-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.delete-btn:hover {
+    background: #b02a37;
+    transform: scale(1.05);
+}
+
+</style>
+</head>
+<body>
+    <nav><h2>Period</h2>
+    <div class="nav-links">
+    <a href="{{url_for('teacher_dashboard')}}">Dashboard</a>
+    <a href="{{url_for('periods')}}">Period</a>
+    <a href="{{url_for('attendance')}}">Attendance</a>
+    <a href="{{ url_for('attendance_details_page')}}">Attendance Details</a>
+    <a href="{{url_for('lecture_notes')}}" >Lecture Notes</a>
+    <a href="{{url_for('academic_task')}}">Academic Tasks</a>
+    <a href="{{url_for('mark_entry')}}">Mark Entry</a>
+    <a href="{{url_for('work_valuate')}}">Work Valuate</a>
+    <a href="{{url_for('teacher_notification')}}">Notification</a>
+    <a href="{{url_for('home_page')}}">Logout</a>
+    </div></nav>
+<div class="container">
+<h2>Weekly Period Entry</h2>
+
+<form action="/periods" method="POST">
+    <label>Department:</label>
+    <select name="department" required>
+      <option value="">--Select Department--</option>  
+      <optgroup label="B.SC.">
+          <option value="B.SC - MATHEMATICS">MATHEMATICS</option>
+          <option value="B.SC - COMPUTER SCIENCE">COMPUTER SCIENCE</option>
+          <option value="B.SC - CHEMISTRY">CHEMISTRY</option>
+          <option value="B.SC - MICROBIOLOGY">MICROBIOLOGY</option>
+          <option value="B.SC - PSYCHOLOGY">PSYCHOLOGY</option>
+        </optgroup>
+        <optgroup label="B.COM">
+          <option value="B.COM - FINANCE">FINANCE</option>
+          <option value="B.COM - ACCOUNTANCY">ACCOUNTANCY</option>
+          <option value="B.COM - CO-OPERATION">CO-OPERATION</option>
+        </optgroup>
+        <optgroup label="B.A.">
+          <option value="B.A - MALAYALAM">MALAYALAM</option>
+          <option value="B.A - ENGLISH">ENGLISH</option>
+          <option value="B.A - HISTORY">HISTORY</option>
+          <option value="B.A - ECONOMICS">ECONOMICS</option>
+        </optgroup>
+        <optgroup label="BTTM">
+          <option value="BTTM - TOURISM MANAGEMENT">TOURISM MANAGEMENT</option>
+        </optgroup>
+      </select><br><br>
+
+    <label>Year:</label>
+    <select name="batch_year" required>
+        <option value="">-- Select --</option>
+        <option value="1">First Year</option>
+        <option value="2">Second Year</option>
+        <option value="3">Third Year</option>
+        <option value="4">Fourth Year</option>
+    </select><br><br>
+
+    <label>Subject:</label>
+    <input type="text" name="subject" required><br><br>
+
+    <label>Day:</label>
+    <select name="day" required>
+        <option value="">-- Select Day --</option>
+        <option>Monday</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+    </select><br><br>
+
+    <label>Period Number (1-5):</label>
+    <input type="number" name="period_number" min="1" max="5" required><br><br>
+
+    <button type="submit">Add Period</button>
+</form>
+
+<h2>Weekly Timetable</h2>
+<table>
+    <tr>
+        <th>Day / Period</th>
+        {% for i in range(1,6) %}
+            <th>Period {{ i }}</th>
+        {% endfor %}
+    </tr>
+    {% for day in ['Monday','Tuesday','Wednesday','Thursday','Friday'] %}
+    <tr>
+        <td><strong>{{ day }}</strong></td>
+        {% for i in range(1,6) %}
+            <td>
+                {% if timetable[day][i] %}
+                    {{ timetable[day][i]|safe }}
+                    <form action="/delete_period" method="POST" style="margin-top:5px;">
+                        <input type="hidden" name="day" value="{{ day }}">
+                        <input type="hidden" name="period_number" value="{{ i }}">
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</div>
+</body>
+</html>
